@@ -10,6 +10,7 @@ import { MouseAura } from './motion/MouseAura';
 import { CyberTransition } from './motion/CyberTransition';
 import { LicenseScreen } from './views/LicenseScreen';
 import { startWindowDrag } from './utils/windowDrag';
+import { LiveDetectionViewport } from './components/Detection/LiveDetectionViewport';
 
 // Authentic Views
 import { AimingView } from './views/AimingView';
@@ -29,7 +30,7 @@ import { InformationView } from './views/InformationView';
 import { WelcomeView } from './views/WelcomeView';
 
 export const AppContent: React.FC = () => {
-  const { subTab, showWelcome } = useConfig();
+  const { subTab, showWelcome, config, updateConfig } = useConfig();
   const [isLicensed, setIsLicensed] = useState(() => {
     try {
       return localStorage.getItem('raven_license_active') === 'true';
@@ -139,6 +140,18 @@ export const AppContent: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {/* Live Real-time AI Detection Viewport / Visuals Overlay */}
+      <AnimatePresence>
+        {(config.showAiWindow || config.overlayRiskyEnabled) && (
+          <LiveDetectionViewport
+            onClose={() => {
+              updateConfig('showAiWindow', false);
+              updateConfig('overlayRiskyEnabled', false);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Modal for Gear Tuning / Popups */}
       <GearModal />
